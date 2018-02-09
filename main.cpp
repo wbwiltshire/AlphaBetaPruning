@@ -6,31 +6,32 @@
 /**************************************************************/
 #include <algorithm>
 #include <iostream>
-#include <vector>
+#include <string>
 #include <limits>
+#include <vector>
 
 // Classes
 class Node {
 public:
-	const Node* parent;
 	std::vector<Node*> children;
+	std::string name;
 	int value;
 
 	//ctor
-	Node(const Node* n, int v) : parent(n), value(v) {
-		std::cout << " - Creatinging node: " << value;
+	Node(std::string n, int v) : name(n), value(v) {
+		std::cout << " - Creatinging node: " << name;
 	}
 	//dtor
 	~Node() {
-		std::cout << "\tDestroying node: " << value << std::endl;
+		std::cout << "\tDestroying node: " << name << std::endl;
 		for (Node* c : children) {
 			delete c;
 		}
-
 	}
-	void AddChild(int v) {
-		child = new Node(this, v);
+	Node& AddChild(std::string n, int v) {
+		child = new Node(n, v);
 		children.push_back(child);
+		return *this;
 	}
 private:
 	Node * child;
@@ -50,10 +51,9 @@ int main(int argc,char* argv[]) {
 
 	std::cout << "Alpha Beta Pruning example!" << std::endl;
 	std::cout << std::endl << "Intialize tree: ";
-	root = new Node(nullptr, max);
-	root->value = max;
+	root = new Node("(0)", max);
 
-	int test = 1;
+	int test = 2;
 	switch (test) {
 		case 1:
 			//First test
@@ -96,7 +96,7 @@ int alphaBeta(Node* node, int depth, int alpha, int beta, bool isMax) {
 			childValue = alphaBeta(n, depth - 1, bestValue, beta, false);
 			bestValue = std::max(bestValue, childValue);
 			if (beta <= bestValue) {
-				std::cout << "\tcutoff" << std::endl;
+				std::cout << "\tcutoff: " << n->name << std::endl;
 				break;
 			}
 		}
@@ -109,7 +109,7 @@ int alphaBeta(Node* node, int depth, int alpha, int beta, bool isMax) {
 			childValue = alphaBeta(n, depth - 1, alpha, bestValue, true);
 			bestValue = std::min(bestValue, childValue);
 			if (bestValue <= alpha) {
-				std::cout << "\tcutoff" << std::endl;
+				std::cout << "\tcutoff" << n->name << std::endl;
 				break;
 			}
 		}
@@ -118,76 +118,76 @@ int alphaBeta(Node* node, int depth, int alpha, int beta, bool isMax) {
 }
 
 // Result is 6 with 
-// cutoff at (0,0,1,2), (1,0,1,1), and (2,1)
+// cutoff at (4, 3), (4, 10), and (2, 4)
 void initTreeTest1(Node* n, int min, int max) {
 	Node* node = nullptr;
 
 	//Create first level as min
-	n->AddChild(min); n->AddChild(min);	n->AddChild(min);
+	(*n).AddChild("(1,0)", min).AddChild("(1,1)",min).AddChild("(1,2)", min);
 
 	//Create second level as max
 	node = n->children[0];
-	node->AddChild(max); node->AddChild(max);
+	(*node).AddChild("(2,0)", max).AddChild("(2,1)", max);
 	node = n->children[1];
-	node->AddChild(max); node->AddChild(max);
+	(*node).AddChild("(2,2)",max).AddChild("(2,3)", max);
 	node = n->children[2];
-	node->AddChild(max); node->AddChild(max);
+	(*node).AddChild("(2,4)", max).AddChild("(2.5)", max);
 
 	//Create third level as min
 	node = n->children[0]->children[0];
-	node->AddChild(min); node->AddChild(min);
+	(*node).AddChild("(3,0)", min).AddChild("(3,1)", min);
 	node = n->children[0]->children[1];
-	node->AddChild(min);
+	(*node).AddChild("(3,2)", min);
 	node = n->children[1]->children[0];
-	node->AddChild(min); node->AddChild(min);
+	(*node).AddChild("(3,3)", min).AddChild("(3,4)", min);
 	node = n->children[1]->children[1];
-	node->AddChild(min);
+	(*node).AddChild("(3,5)", min);
 	node = n->children[2]->children[0];
-	node->AddChild(min);
+	(*node).AddChild("(3,6)", min);
 	node = n->children[2]->children[1];
-	node->AddChild(min); node->AddChild(min);
+	(*node).AddChild("(3,7)", min).AddChild("(3,8)", min);
 
 	//Create fourth level with real values
 	node = n->children[0]->children[0]->children[0];
-	node->AddChild(5); node->AddChild(6);
+	(*node).AddChild("(4,0)", 5).AddChild("(4,1)", 6);
 	node = n->children[0]->children[0]->children[1];
-	node->AddChild(7); node->AddChild(4); node->AddChild(5);
+	(*node).AddChild("(4,2)", 7).AddChild("(4,3)", 4).AddChild("(4,4)", 5);
 	node = n->children[0]->children[1]->children[0];
-	node->AddChild(3);
+	(*node).AddChild("(4,5)", 3);
 	node = n->children[1]->children[0]->children[0];
-	node->AddChild(6);
+	(*node).AddChild("(4,6)", 6);
 	node = n->children[1]->children[0]->children[1];
-	node->AddChild(6); node->AddChild(9);
+	(*node).AddChild("(4,7)", 6); node->AddChild("(4,8)", 9);
 	node = n->children[1]->children[1]->children[0];
-	node->AddChild(7);
+	(*node).AddChild("(4,9)", 7);
 	node = n->children[2]->children[0]->children[0];
-	node->AddChild(5);
+	(*node).AddChild("(4,10)", 5);
 	node = n->children[2]->children[1]->children[0];
-	node->AddChild(9); node->AddChild(8);
+	(*node).AddChild("(4,11)", 9); node->AddChild("(4,12)", 8);
 	node = n->children[2]->children[1]->children[1];
-	node->AddChild(6);
+	(*node).AddChild("(4,13)", 6);
 
 }
 // Result is 4 with 
-// cutoff at (1,2) and (2,1)
+// cutoff at (2,3) and (2,5)
 void initTreeTest2(Node* n, int min, int max) {
 	Node* node = nullptr;
 
 	//Create first level as min
-	n->AddChild(min); n->AddChild(min);	n->AddChild(min);
+	(*n).AddChild("(1,0)", min).AddChild("(1,1)", min).AddChild("(1,2)", min);
 
 	//Create second level as max
 	node = n->children[0];
-	node->AddChild(4); node->AddChild(5);
+	(*node).AddChild("(2,0)", 4).AddChild("(2,1)", 5);
 	node = n->children[1];
-	node->AddChild(6); node->AddChild(max); node->AddChild(max);
+	(*node).AddChild("(2,2)", 6).AddChild("(2,3)", max).AddChild("(2,4)", max);
 	node = n->children[2];
-	node->AddChild(3); node->AddChild(8);
+	(*node).AddChild("(2,5)", 3).AddChild("(2,6)", 8);
 
 	//Create third level as min
 	node = n->children[1]->children[1];
-	node->AddChild(3); node->AddChild(4);
+	(*node).AddChild("(3,0)", 3).AddChild("(3.1)", 4);
 	node = n->children[1]->children[2];
-	node->AddChild(7); node->AddChild(9);
+	(*node).AddChild("(3,2)", 7).AddChild("(3,3)", 9);
 
 }
