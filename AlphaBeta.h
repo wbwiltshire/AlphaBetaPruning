@@ -11,7 +11,7 @@ public:
 	std::string name;
 	int value;
 
-	Node(std::string, int, bool dbg);	// ctor
+	Node(std::string, int, bool dbg = false);	// ctor
 	~Node();						// dtor
 	Node& AddChild(std::string, int);
 private:
@@ -31,3 +31,4 @@ protected:
 private:
 	virtual int staticEvaluator() = 0;
 };
+

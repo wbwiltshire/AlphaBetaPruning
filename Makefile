@@ -16,7 +16,7 @@ all: $(ODIR)\$(EXE)
 .cpp{$(ODIR)}.obj: 
 	$(CC) $(CFLAGS) $** /Fo$@
 
-$(ODIR)\$(EXE): $(ODIR)\main.obj $(ODIR)\AlphaBeta.obj $(ODIR)\SimpleAlphaBeta.obj $(ODIR)\ElapsedTimer.obj
+$(ODIR)\$(EXE): $(ODIR)\main.obj $(ODIR)\SimpleAlphaBeta.obj $(ODIR)\ElapsedTimer.obj
 	$(LINK) $** $(LFLAGS) /out:$@
 
 clean:
