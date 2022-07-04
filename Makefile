@@ -19,6 +19,8 @@ all: $(ODIR)\$(EXE)
 $(ODIR)\$(EXE): $(ODIR)\main.obj $(ODIR)\SimpleAlphaBeta.obj $(ODIR)\ElapsedTimer.obj
 	$(LINK) $** $(LFLAGS) /out:$@
 
+test: $(ODIR)\$(EXE)
+	$(ODIR)\$(EXE)
 clean:
 	@IF EXIST *.pdb (del *.pdb)
 	@IF EXIST bin\*.obj (del bin\*.obj)
